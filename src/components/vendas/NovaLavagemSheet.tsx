@@ -1,58 +1,50 @@
-import { useMemo, useState } from "react";
-import { Sparkles } from "lucide-react";
+import { useState } from "react";
 import { toast } from "sonner";
 import { Sheet } from "@/components/Sheet";
-import { Field, PrimaryButton, SelectInput, TextInput } from "@/components/Field";
-import { brl, placaMask, telefoneMask } from "@/lib/format";
+import { Field, PrimaryButton, TextInput } from "@/components/Field";
+import { ServicosEditor } from "@/components/vendas/ServicosEditor";
+import { brl, telefoneMask } from "@/lib/format";
+import { totalDosServicos } from "@/lib/lavagem";
 import { useLavagens } from "@/hooks/useLavagens";
-import { useServicos } from "@/hooks/useServicos";
+import type { LavagemServico } from "@/types";
 
 export function NovaLavagemSheet({ open, onClose }: { open: boolean; onClose: () => void }) {
-  const { ativos } = useServicos();
   const { iniciar } = useLavagens();
 
   const [nome, setNome] = useState("");
   const [telefone, setTelefone] = useState("");
   const [modelo, setModelo] = useState("");
   const [placa, setPlaca] = useState("");
-  const [servicoId, setServicoId] = useState("");
-  const [adicional, setAdicional] = useState("");
-  const [adicionalDesc, setAdicionalDesc] = useState("");
+  const [servicos, setServicos] = useState<LavagemServico[]>([]);
   const [salvando, setSalvando] = useState(false);
+  const [versao, setVersao] = useState(0);
 
-  const servico = useMemo(() => ativos.find((s) => s.id === servicoId), [ativos, servicoId]);
-  const adicionalValor = Number(adicional.replace(",", ".")) || 0;
-  const total = (servico?.preco ?? 0) + adicionalValor;
-  const valido = nome.trim() && modelo.trim() && placa.trim() && servico;
+  const total = totalDosServicos(servicos);
+  const valido = Boolean(nome.trim() && modelo.trim() && placa.trim() && servicos.length > 0);
 
   const limpar = () => {
     setNome("");
     setTelefone("");
     setModelo("");
     setPlaca("");
-    setServicoId("");
-    setAdicional("");
-    setAdicionalDesc("");
+    setServicos([]);
+    setVersao((v) => v + 1);
   };
 
   const salvar = async () => {
-    if (!valido || !servico) return;
+    if (!valido) return;
     setSalvando(true);
     await iniciar({
       clienteNome: nome.trim(),
       clienteTelefone: telefone.trim(),
       veiculoModelo: modelo.trim(),
       veiculoPlaca: placa.trim(),
-      servicoId: servico.id,
-      servicoNome: servico.nome,
-      valorServico: servico.preco,
-      adicionalValor,
-      adicionalDescricao: adicionalDesc.trim() || undefined,
+      servicos,
     });
     setSalvando(false);
     limpar();
     onClose();
-    toast.success("✓ Lavagem iniciada");
+    toast.success("✓ Carro no pátio (aguardando)");
   };
 
   return (
@@ -68,7 +60,7 @@ export function NovaLavagemSheet({ open, onClose }: { open: boolean; onClose: ()
             <span className="num text-2xl font-bold text-brand-light">{brl(total)}</span>
           </div>
           <PrimaryButton onClick={salvar} disabled={!valido || salvando}>
-            Iniciar lavagem
+            Adicionar ao pátio
           </PrimaryButton>
         </>
       }
@@ -102,48 +94,12 @@ export function NovaLavagemSheet({ open, onClose }: { open: boolean; onClose: ()
         <Field label="Placa">
           <TextInput
             value={placa}
-            onChange={(e) => setPlaca(placaMask(e.target.value))}
+            onChange={(e) => setPlaca(e.target.value)}
             placeholder="ABC-1234"
-            className="num uppercase"
           />
         </Field>
 
-        <Field label="Serviço">
-          <SelectInput
-            icon={Sparkles}
-            title="Serviço"
-            placeholder="Selecione o serviço"
-            value={servicoId}
-            onChange={setServicoId}
-            options={ativos.map((s) => ({ value: s.id, label: s.nome, hint: brl(s.preco) }))}
-          />
-        </Field>
-
-        <div className="card-base px-4 py-3">
-          <div className="flex items-center justify-between text-sm">
-            <span className="text-muted-foreground">Valor do serviço</span>
-            <span className="num text-lg font-semibold">{brl(servico?.preco ?? 0)}</span>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-2 gap-3">
-          <Field label="Adicional (R$)">
-            <TextInput
-              value={adicional}
-              onChange={(e) => setAdicional(e.target.value.replace(/[^0-9.,]/g, ""))}
-              inputMode="decimal"
-              placeholder="0,00"
-              className="num"
-            />
-          </Field>
-          <Field label="Descrição">
-            <TextInput
-              value={adicionalDesc}
-              onChange={(e) => setAdicionalDesc(e.target.value)}
-              placeholder="Enceramento"
-            />
-          </Field>
-        </div>
+        <ServicosEditor key={versao} valor={[]} onChange={setServicos} />
       </div>
     </Sheet>
   );

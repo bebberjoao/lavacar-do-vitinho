@@ -46,6 +46,11 @@
   --color-brand-foreground: var(--brand-foreground);
   --color-surface: var(--surface);
 
+  --color-status-wait: var(--status-wait);
+  --color-status-wash: var(--status-wash);
+  --color-status-done: var(--status-done);
+
+
   --shadow-card: 0 1px 2px 0 oklch(0 0 0 / 0.5);
   --shadow-float: 0 10px 30px -10px oklch(0 0 0 / 0.8);
 }
@@ -70,6 +75,12 @@
   --destructive-foreground: oklch(0.98 0.004 260);
   --border: oklch(0.31 0.008 260);
   --input: oklch(0.28 0.008 260);
+
+  /* Status das lavagens — âmbar (aguardando), azul (lavando), verde (finalizado) */
+  --status-wait: oklch(0.76 0.105 85);
+  --status-wash: oklch(0.68 0.085 245);
+  --status-done: oklch(0.67 0.092 122);
+
 
   /* Vendas — verde musgo / oliva escuro (#657A45 / #3F4F2B / #849F58) */
   --brand: oklch(0.55 0.076 121);

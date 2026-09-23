@@ -1,15 +1,27 @@
 import { Link } from "@tanstack/react-router";
-import { CircleDollarSign, Droplets, PanelLeftClose, PanelLeftOpen, SprayCan, Wallet } from "lucide-react";
+import {
+  Boxes,
+  CalendarDays,
+  CircleDollarSign,
+  Droplets,
+  PanelLeftClose,
+  PanelLeftOpen,
+  SprayCan,
+  Wallet,
+} from "lucide-react";
 import { useEffect, useState, type ReactNode } from "react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 const nav = [
-  { to: "/", label: "Vendas", icon: Droplets, exact: true },
+  { to: "/", label: "Pátio", icon: Droplets, exact: true },
+  { to: "/agenda", label: "Agenda", icon: CalendarDays, exact: false },
+  { to: "/estoque", label: "Estoque", icon: Boxes, exact: false },
   { to: "/despesas", label: "Despesas", icon: Wallet, exact: false },
   { to: "/analise", label: "Análise", icon: CircleDollarSign, exact: false },
   { to: "/servicos", label: "Serviços", icon: SprayCan, exact: false },
 ] as const;
+
 
 export function AppShell({
   children,
@@ -111,19 +123,21 @@ export function AppShell({
 
       {/* Bottom nav (mobile) */}
       <nav className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-surface/95 pb-[env(safe-area-inset-bottom)] backdrop-blur lg:hidden">
-        <div className="mx-auto grid max-w-xl grid-cols-4">
+        <div className="mx-auto grid max-w-xl grid-cols-6">
           {nav.map(({ to, label, icon: Icon, exact }) => (
             <Link
               key={to}
               to={to}
               activeOptions={{ exact }}
-              className="flex flex-col items-center gap-1 py-3 text-xs font-medium text-muted-foreground data-[status=active]:text-brand-light"
+              aria-label={label}
+              className="flex flex-col items-center gap-1 px-0.5 py-3 text-[10px] font-medium text-muted-foreground data-[status=active]:text-brand-light"
             >
-              <Icon className="size-6" />
-              {label}
+              <Icon className="size-5" />
+              <span className="w-full truncate text-center">{label}</span>
             </Link>
           ))}
         </div>
+
       </nav>
     </div>
   );

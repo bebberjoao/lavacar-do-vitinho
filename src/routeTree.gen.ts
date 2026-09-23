@@ -10,13 +10,20 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AgendaRouteImport } from './routes/agenda'
 import { Route as AnaliseRouteImport } from './routes/analise'
 import { Route as DespesasRouteImport } from './routes/despesas'
+import { Route as EstoqueRouteImport } from './routes/estoque'
 import { Route as ServicosRouteImport } from './routes/servicos'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AgendaRoute = AgendaRouteImport.update({
+  id: '/agenda',
+  path: '/agenda',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AnaliseRoute = AnaliseRouteImport.update({
@@ -29,6 +36,11 @@ const DespesasRoute = DespesasRouteImport.update({
   path: '/despesas',
   getParentRoute: () => rootRouteImport,
 } as any)
+const EstoqueRoute = EstoqueRouteImport.update({
+  id: '/estoque',
+  path: '/estoque',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ServicosRoute = ServicosRouteImport.update({
   id: '/servicos',
   path: '/servicos',
@@ -37,35 +49,51 @@ const ServicosRoute = ServicosRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/agenda': typeof AgendaRoute
   '/analise': typeof AnaliseRoute
   '/despesas': typeof DespesasRoute
+  '/estoque': typeof EstoqueRoute
   '/servicos': typeof ServicosRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/agenda': typeof AgendaRoute
   '/analise': typeof AnaliseRoute
   '/despesas': typeof DespesasRoute
+  '/estoque': typeof EstoqueRoute
   '/servicos': typeof ServicosRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/agenda': typeof AgendaRoute
   '/analise': typeof AnaliseRoute
   '/despesas': typeof DespesasRoute
+  '/estoque': typeof EstoqueRoute
   '/servicos': typeof ServicosRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/analise' | '/despesas' | '/servicos'
+  fullPaths:
+    '/' | '/agenda' | '/analise' | '/despesas' | '/estoque' | '/servicos'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/analise' | '/despesas' | '/servicos'
-  id: '__root__' | '/' | '/analise' | '/despesas' | '/servicos'
+  to: '/' | '/agenda' | '/analise' | '/despesas' | '/estoque' | '/servicos'
+  id:
+    | '__root__'
+    | '/'
+    | '/agenda'
+    | '/analise'
+    | '/despesas'
+    | '/estoque'
+    | '/servicos'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AgendaRoute: typeof AgendaRoute
   AnaliseRoute: typeof AnaliseRoute
   DespesasRoute: typeof DespesasRoute
+  EstoqueRoute: typeof EstoqueRoute
   ServicosRoute: typeof ServicosRoute
 }
 
@@ -76,6 +104,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/agenda': {
+      id: '/agenda'
+      path: '/agenda'
+      fullPath: '/agenda'
+      preLoaderRoute: typeof AgendaRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/analise': {
@@ -92,6 +127,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DespesasRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/estoque': {
+      id: '/estoque'
+      path: '/estoque'
+      fullPath: '/estoque'
+      preLoaderRoute: typeof EstoqueRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/servicos': {
       id: '/servicos'
       path: '/servicos'
@@ -104,8 +146,10 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AgendaRoute: AgendaRoute,
   AnaliseRoute: AnaliseRoute,
   DespesasRoute: DespesasRoute,
+  EstoqueRoute: EstoqueRoute,
   ServicosRoute: ServicosRoute,
 }
 export const routeTree = rootRouteImport

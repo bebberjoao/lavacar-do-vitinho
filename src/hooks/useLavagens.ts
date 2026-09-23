@@ -1,7 +1,8 @@
 import { useMemo } from "react";
 import { lavagensRepo } from "@/services/repositories";
 import { isHoje, isMesAtual } from "@/lib/format";
-import type { FormaPagamento, Lavagem } from "@/types";
+import { totalDosServicos } from "@/lib/lavagem";
+import type { FormaPagamento, Lavagem, LavagemServico } from "@/types";
 import { useRepository } from "./useRepository";
 
 export function useLavagens() {
@@ -39,10 +40,17 @@ export function useLavagens() {
   const iniciar = (dados: Omit<Lavagem, "id" | "status" | "criadoEm" | "total">) =>
     create({
       ...dados,
-      total: dados.valorServico + dados.adicionalValor,
-      status: "em_lavagem",
+      total: totalDosServicos(dados.servicos),
+      status: "aguardando",
       criadoEm: new Date().toISOString(),
     } as Omit<Lavagem, "id">);
+
+  /** Troca os serviços de uma lavagem e recalcula o total. */
+  const definirServicos = (id: string, servicos: LavagemServico[]) =>
+    update(id, { servicos, total: totalDosServicos(servicos) });
+
+
+
 
   const finalizar = (id: string, formaPagamento: FormaPagamento) =>
     update(id, {
@@ -59,6 +67,7 @@ export function useLavagens() {
     loading,
     iniciar,
     finalizar,
+    definirServicos,
     update,
     remove,
   };

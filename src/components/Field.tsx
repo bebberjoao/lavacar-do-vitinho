@@ -75,6 +75,9 @@ export function SelectInput({
         <span className={cn("min-w-0 flex-1 truncate", !selected && "text-muted-foreground/70")}>
           {selected ? selected.label : placeholder}
         </span>
+        {selected?.hint ? (
+          <span className="num shrink-0 text-sm font-semibold text-brand-light">{selected.hint}</span>
+        ) : null}
         <ChevronDown className="size-5 shrink-0 text-muted-foreground" />
       </button>
 

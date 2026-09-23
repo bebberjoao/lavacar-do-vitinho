@@ -44,10 +44,6 @@ export const telefoneMask = (v: string) => {
   return `(${d.slice(0, 2)}) ${d.slice(2, 7)}-${d.slice(7)}`;
 };
 
-export const placaMask = (v: string) => {
-  const s = v.toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 7);
-  return s.length > 3 ? `${s.slice(0, 3)}-${s.slice(3)}` : s;
-};
 
 export const whatsappLink = (telefone: string, mensagem: string) => {
   const d = soDigitos(telefone);

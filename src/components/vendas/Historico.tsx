@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import { brl, dataBR, diasDesde, isHoje, isMesAtual } from "@/lib/format";
+import { resumoServicos } from "@/lib/lavagem";
 import type { Lavagem } from "@/types";
 
 const filtros = [
@@ -74,7 +75,7 @@ export function Historico({
                   {l.veiculoModelo} · <span className="num">{l.veiculoPlaca}</span>
                 </p>
                 <p className="truncate text-sm text-muted-foreground">
-                  {l.clienteNome} · {l.servicoNome}
+                  {l.clienteNome} · {resumoServicos(l)}
                 </p>
                 <p className="mt-0.5 text-xs text-muted-foreground">
                   {dataBR(l.finalizadoEm ?? l.criadoEm)} · {l.formaPagamento ?? "—"} · Finalizada

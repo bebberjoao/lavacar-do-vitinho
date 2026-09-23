@@ -24,7 +24,42 @@ export type StatusLavagem = "aguardando" | "em_lavagem" | "finalizada";
 
 export type FormaPagamento = "Dinheiro" | "Pix" | "Débito" | "Crédito" | "Transferência";
 
+/** Item de serviço de uma lavagem (equivale a lavagem_servicos). */
+export interface LavagemServico {
+  id: string;
+  servicoId: string;
+  nome: string;
+  valorBase: number;
+  adicionalValor: number;
+  valorFinal: number;
+}
+
 export interface Lavagem {
+  id: string;
+  clienteNome: string;
+  clienteTelefone: string;
+  veiculoModelo: string;
+  veiculoPlaca: string;
+  /** Vários serviços por lavagem. */
+  servicos: LavagemServico[];
+  total: number;
+  status: StatusLavagem;
+  formaPagamento?: FormaPagamento | undefined;
+  criadoEm: string;
+  finalizadoEm?: string | undefined;
+
+  /* Campos legados (lavagens gravadas antes de vários serviços). */
+  servicoId?: string | undefined;
+  servicoNome?: string | undefined;
+  valorServico?: number | undefined;
+  adicionalValor?: number | undefined;
+  adicionalDescricao?: string | undefined;
+}
+
+export type StatusAgendamento = "agendado" | "concluido" | "cancelado";
+
+/** Reserva de lavagem marcada para uma data/hora futura. */
+export interface Agendamento {
   id: string;
   clienteNome: string;
   clienteTelefone: string;
@@ -32,14 +67,12 @@ export interface Lavagem {
   veiculoPlaca: string;
   servicoId: string;
   servicoNome: string;
-  valorServico: number;
-  adicionalValor: number;
-  adicionalDescricao?: string | undefined;
-  total: number;
-  status: StatusLavagem;
-  formaPagamento?: FormaPagamento | undefined;
+  valor: number;
+  data: string; // ISO yyyy-mm-dd
+  hora: string; // HH:mm
+  observacoes?: string | undefined;
+  status: StatusAgendamento;
   criadoEm: string;
-  finalizadoEm?: string | undefined;
 }
 
 export type CategoriaDespesa =
@@ -82,3 +115,54 @@ export const FORMAS_PAGAMENTO: FormaPagamento[] = [
   "Crédito",
   "Transferência",
 ];
+
+/* ---------------------------------------------------------------- Estoque */
+
+export type CategoriaEstoque = "Produtos" | "Equipamentos" | "Consumíveis";
+
+export type UnidadeEstoque = "unidade" | "litro" | "ml" | "kg" | "pacote" | "caixa";
+
+/** Aviso do item. Base para notificações automáticas futuras (aviso !== "nenhum"). */
+export type AvisoEstoque = "nenhum" | "comprar" | "manutencao" | "conserto" | "verificar" | "outro";
+
+export interface ItemEstoque {
+  id: string;
+  nome: string;
+  categoria: CategoriaEstoque;
+  quantidade: number;
+  unidade: UnidadeEstoque;
+  observacao?: string | undefined;
+  aviso: AvisoEstoque;
+  created_at: string;
+  updated_at: string;
+}
+
+export const CATEGORIAS_ESTOQUE: CategoriaEstoque[] = ["Produtos", "Equipamentos", "Consumíveis"];
+
+export const UNIDADES_ESTOQUE: UnidadeEstoque[] = [
+  "unidade",
+  "litro",
+  "ml",
+  "kg",
+  "pacote",
+  "caixa",
+];
+
+export const AVISOS_ESTOQUE: AvisoEstoque[] = [
+  "nenhum",
+  "comprar",
+  "manutencao",
+  "conserto",
+  "verificar",
+  "outro",
+];
+
+export const AVISO_LABEL: Record<AvisoEstoque, string> = {
+  nenhum: "Nenhum",
+  comprar: "Comprar",
+  manutencao: "Manutenção",
+  conserto: "Conserto",
+  verificar: "Verificar",
+  outro: "Outro",
+};
+
